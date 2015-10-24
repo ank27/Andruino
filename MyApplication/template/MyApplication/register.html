@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'MyApplication/register.css' %}"/>
+<html lang="en" class="-webkit-">
+<head>
+    <meta charset="UTF-8">
+    <title>User Registration</title>
+</head>
+<body>
+<br/>
+<div class="header">
+    {% if error_message %}<p style="color: #a9302a">{{error_message }}</p>{% endif %}
+</div>
+    <div id="login" class="login">
+        <h1>Registration</h1>
+        <form name="LoginForm" action="{% url 'MyApplication:register_submit' %}" method="post">
+        {% csrf_token %}
+                <input type="text" id="username" name="username"  placeholder="Username" required="required">
+            <br>
+                <input type="text" id="email" name="email"  placeholder="Email" required="required">
+            <br>
+                <input type="text" id="contact" name="contact"  placeholder="Contact" maxlength="10" required="required">
+            <br>
+                <input type="password" name="password" id="password" placeholder="Password" required="required">
+            <br>
+                <button type="submit" class="btn btn-primary btn-block btn-large">Register</button>
+            <br>
+                <a href="register.html" style="color: white">Already have an account</a>
+        </form>
+    </div>
+</body>
+</html>

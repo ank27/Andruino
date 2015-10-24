@@ -1,0 +1,140 @@
+{#{% extends "new_custom_admin/base.html" %}#}
+{% load static %}
+{% block bodycontent %}
+    <link rel="stylesheet" href="{% static "Panel/jjsonviewer.js"%}">
+    <link rel="stylesheet" href="{% static "MyApplication/js/jquery.min.js"%}">
+    <link rel="stylesheet" href="{% static "MyApplication/js/init.js"%}">
+<div class="page coupon-single-coupon-page">
+   <div class="pageheader">
+      <h2 class="page-header">Test API</h2>
+      <div class="page-bar">
+         <ul class="page-breadcrumb">
+            <li>
+               <a href="/movinCartAdmin/"><i class="fa fa-home"></i> MovinCart</a>
+            </li>
+            <li>
+               <a href="#">Available Services API Detail</a>
+            </li>
+         </ul>
+      </div>
+   </div>
+   <div class="add-nav">
+      <div class="nav-heading">
+         <h3>Available Services</h3>
+         <span class="controls pull-right">
+            <a href="#" onclick="test_submit()" class="btn btn-ef btn-ef-1 btn-ef-1-success btn-ef-1b mb-10" data-toggle="tooltip" title="test_all_location"><i>Test All Location</i></a>
+         </span>
+      </div>
+      <div role="tabpanel">
+         <!-- Nav tabs -->
+         <div class="tab-content">
+            <!-- tab in tabs -->
+            <div role="tabpanel" class="tab-pane active" id="details">
+               <!-- row -->
+               <div class="row">
+                  <!-- col -->
+                  <div class="col-md-12">
+                     <!-- tile -->
+                     <form action="" method="GET" id="myForm" class="form-horizontal ng-pristine ng-valid" role="form">
+                        {% csrf_token %}
+                        <section class="tile">
+                           <!-- tile header -->
+                           <div class="tile-header dvd dvd-btm">
+                              <h1 class="custom-font"><strong>Available Services API Details </strong></h1>
+                           </div>
+                           <!-- /tile header -->
+                           <!-- tile body -->
+                           <div class="form-group">
+                              <label for="locations" class="col-sm-2 control-label">Location ID: <span class="text-lightred text-md"></span></label>
+                              <div class="col-sm-6">
+                                <input id="id_location" type="value" value="29" class="form-control" disabled>
+                              </div>
+                                   </div>
+                           <div class="form-group">
+                              <label for="version" class="col-sm-2 control-label">Version ID</label>
+                              <div class="col-sm-9">
+                                 <input required name="version" type="value"  value="1" class="form-control" id="version_id" placeholder="Version ID" disabled style="width: 100%; ">
+                              </div>
+                           </div>
+                           <div class="form-group">
+                              <label for="device" class="col-sm-2 control-label">Device ID</label>
+                              <div class="col-sm-9">
+                                 <input required name="version" type="value"  value="353490067751970" class="form-control" id="phone_id" placeholder="Phone ID" disabled style="width: 100%; ">
+                              </div>
+                           </div>
+                           <div class="form-group">
+                              <label for="contact_number" class="col-sm-2 control-label">Contact: <span class="text-lightred text-md"></span></label>
+                              <div class="col-sm-6">
+                                 <select tabindex="1" name="contact_number" id="contact_number"  class="chosen-select" style="width: 95%;" >
+                                    <option value="">--------------------</option>
+                                    {% for u in user_contact %}
+                                    <option value="{{u.user_contact}}" >{{u.user_contact }}</option>
+                                    {% endfor %}
+                                 </select>
+                              </div>
+                                   </div>
+                                    <div class="form-group">
+                              <label for="email_address" class="col-sm-2 control-label">Email: <span class="text-lightred text-md"></span></label>
+                              <div class="col-sm-6">
+                                 <select tabindex="1" name="email_address" id="email_address"  class="chosen-select" style="width: 95%;" >
+                                    <option value="">--------------------</option>
+                                    {% for u in user_email %}
+                                    <option value="{{u.user_email}}" >{{u.user_email }}</option>
+                                    {% endfor %}
+                                 </select>
+                              </div>
+                                   </div>
+                                    <div class="form-group">
+                              <label for="email_address" class="col-sm-2 control-label">Email Preferred: <span class="text-lightred text-md"></span></label>
+                              <div class="col-sm-6">
+                                 <select tabindex="1" name="email_address" id="email_address"  class="chosen-select" style="width: 95%;" >
+                                    <option value="">--------------------</option>
+                                    {% for u in user_email %}
+                                    <option value="{{u.user_email}}" >{{u.user_email}}</option>
+                                    {% endfor %}
+                                 </select>
+                              </div>
+                                   </div>
+                           <ul class="pager">
+                              <li>
+                                 <a href="#" onclick="validate_n_submit()" class="btn btn-ef btn-ef-1 btn-ef-1-success btn-ef-1b mb-10" data-toggle="tooltip" title="check service"><i>Check Service</i></a></li>
+                           </ul>
+                        </section>
+                     </form>
+                     <div id = "placeholder"></div>
+                  </div>
+               </div>
+
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}
+{% block jscontent %}
+<script src="{% static "Panel/jjsonviewer.js"%}"></script>
+
+<script>
+function httpGet(theUrl)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+}
+function validate_n_submit() {
+    var version_id='1';
+    var device_id='353490067751970';
+    var pincode = '29';
+    var contact = $('#contact_number').val();
+    var preferred_email = $('#preferred_email').val();
+    var email = $('#email').val();
+    var api_key = $('#api_key').val();
+    var url = "/wholesale/v1/available_services/?location_id="+pincode+"&version="+version_id+"&device_id="+device_id+"&contact="+contact+"&email="+email+"&api_key="+api_key+"&referred_email="+preferred_email;
+    console.log(url);
+    var data = httpGet(url);
+    $("#placeholder").jJsonViewer(JSON.parse(data));
+}
+
+</script>
+{% endblock %}

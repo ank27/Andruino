@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'MyApplication/login.css' %}"/>
+<html><head>
+    <meta charset="UTF-8">
+    <title>Login screen</title>
+    <noscript>
+        <link rel="stylesheet" href="{% static 'MyApplication/login.css' %}">
+		</noscript>
+</head>
+ <body>
+    <div class="wrapper">
+	<div class="container">
+		<h1>Welcome</h1>
+        <form class="form" action="{% url 'MyApplication:login_submit' %}" method="post">
+            {% csrf_token %}
+			<input type="text" name="contact" placeholder="Enter Mobile Number">
+			<input type="password" name="password" placeholder="Enter Password">
+			<button type="submit" id="login-button">Login</button>
+            <h1>{% if error_message %}<p style="color: #a9302a">{{error_message }}</p>{% endif %}</h1>
+		</form>
+	</div>
+    </div>
+ </body></html>
+

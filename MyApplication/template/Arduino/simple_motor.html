@@ -1,0 +1,91 @@
+{#{% extends "new_custom_admin/base.html" %}#}
+{% load static %}
+{% block bodycontent %}
+    <link rel="stylesheet" href="{% static "Panel/jjsonviewer.js" %}" xmlns="http://www.w3.org/1999/html">
+    <link rel="stylesheet" href="{% static "MyApplication/js/jquery.min.js"%}">
+    <link rel="stylesheet" href="{% static "MyApplication/js/init.js"%}">
+<div class="page coupon-single-coupon-page">
+   <div class="pageheader">
+      <h2 class="page-header">Test API</h2>
+      <div class="page-bar">
+         <ul class="page-breadcrumb">
+            <li>
+               <a href="/movinCartAdmin/"><i class="fa fa-home"></i> MovinCart</a>
+            </li>
+            <li>
+               <a href="#">Available Services API Detail</a>
+            </li>
+         </ul>
+      </div>
+   </div>
+   <div class="add-nav">
+      <div class="nav-heading">
+         <h3>Available Services</h3>
+         <span class="controls pull-right">
+            <a href="#" onclick="test_submit()" class="btn btn-ef btn-ef-1 btn-ef-1-success btn-ef-1b mb-10" data-toggle="tooltip" title="test_all_location"><i>Test All Location</i></a>
+         </span>
+      </div>
+      <div role="tabpanel">
+         <!-- Nav tabs -->
+         <div class="tab-content">
+            <!-- tab in tabs -->
+            <div role="tabpanel" class="tab-pane active" id="details">
+               <!-- row -->
+               <div class="row">
+                  <!-- col -->
+                  <div class="col-md-12">
+                     <!-- tile -->
+                     <form action="" method="GET" id="myForm1" class="form-horizontal ng-pristine ng-valid" role="form">
+                        {% csrf_token %}
+                         <h1>Forward Speed</h1>
+                         <input type="radio" name="speed_pin5" value="0" onclick="this.form.submit()">Stop</input>
+                         <input type="radio" name="speed_pin5" value="20" onclick="this.form.submit()">1/4</input>
+                         <input type="radio" name="speed_pin5" value="40" onclick="this.form.submit()">1/2</input>
+                         <input type="radio" name="speed_pin5" value="80" onclick="this.form.submit()">Full</input>
+                         <input type="hidden" name="direction_pin4" value="0">
+                      </form>
+
+                      <form action="" method="GET" id="myForm2" class="form-horizontal ng-pristine ng-valid" role="form">
+                        {% csrf_token %}
+                          <h1>Backward Speed</h1>
+                         <input type="radio" name="speed_pin5" value="80" onclick="this.form.submit()">Full</input>
+                         <input type="radio" name="speed_pin5" value="40" onclick="this.form.submit()">1/2</input>
+                         <input type="radio" name="speed_pin5" value="20" onclick="this.form.submit()">1/4</input>
+                         <input type="radio" name="speed_pin5" value="0" onclick="this.form.submit()">Stop</input>
+                          <input type="hidden" name="direction_pin4" value="0">
+                      </form>
+
+                     </form>
+                     <div id = "placeholder"></div>
+                  </div>
+               </div>
+
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}
+{% block jscontent %}
+<script src="{% static "Panel/jjsonviewer.js"%}"></script>
+
+<script>
+function httpGet(theUrl)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+}
+function submit() {
+    var speed = $('#speed_pin5').val();
+    var direction = $('#direction_pin4').val();
+   
+    var url = "/wholesale/v1/available_services/?location_id="+pincode+"&version="+version_id+"&device_id="+device_id+"&contact="+contact+"&email="+email+"&api_key="+api_key+"&referred_email="+preferred_email;
+    console.log(url);
+    var data = httpGet(url);
+    $("#placeholder").jJsonViewer(JSON.parse(data));
+}
+
+</script>
+{% endblock %}
