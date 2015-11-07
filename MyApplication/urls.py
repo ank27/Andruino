@@ -22,11 +22,11 @@ urlpatterns=[
 
      url(r'^networks/$', views.network, name='networks'),
      url(r'^base/$', views.base, name='base'),
-     url(r'^index/$',views.index_minovate,name='index_minovate'),
+
 
 
      # ======================for minoavate===========================================================#####
-     url(r'^index/$',views.index_minovate,name='index_minovate'),
+     url(r'^index/$',arduino_views.send_binary_values,name='led_switch'),
      url(r'^my_login/$',views.login_minovate,name='login'),
      url(r'^my_signup/$',views.signup_minovate,name='signin'),
      url(r'^forget_password/$',views.forget_password,name="forgetpwd"),
@@ -46,6 +46,6 @@ urlpatterns=[
 
      #App
      url(r'^app/app_data/$',arduino_views.app_data,name='get_topics'),
-
-
+     url(r'^app/get_data/$',arduino_views.send_app_data,name='send_app_data'),
+     url(r'^app/send_values/$',arduino_views.get_app_data,name='get_app_data'),
 ]

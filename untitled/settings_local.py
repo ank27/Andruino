@@ -118,8 +118,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 STATIC_ROOT ='/static/'
-STATIC_URL = "/static/"
+STATIC_URL = '/static/'
 
+STATICFILES_DIRS = (
+    os.path.join(os.path.dirname(__file__), 'static'),
+)
 
 GOOGLE_OAUTH2_CLIENT_ID = '909208198783-4sglfbfe6lua5p4q2c8h6g7vdcr6vl9l.apps.googleusercontent.com'
 GOOGLE_OAUTH2_CLIENT_SECRET = '9EclN6Wrr4XJSlwsTkrcR6ee'

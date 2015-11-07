@@ -1,1 +1,9 @@
 /untitled/settins_local.py
+*.py[cod]
+*.so
+.Python
+build/
+*.pyc
+.idea
+.idea/
+*.pyc

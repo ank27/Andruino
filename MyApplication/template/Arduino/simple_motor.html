@@ -81,7 +81,7 @@ function submit() {
     var speed = $('#speed_pin5').val();
     var direction = $('#direction_pin4').val();
    
-    var url = "/wholesale/v1/available_services/?location_id="+pincode+"&version="+version_id+"&device_id="+device_id+"&contact="+contact+"&email="+email+"&api_key="+api_key+"&referred_email="+preferred_email;
+    var url = "/MyApplication/motor_values/?speed="+speed+"&direction="+direction;
     console.log(url);
     var data = httpGet(url);
     $("#placeholder").jJsonViewer(JSON.parse(data));
