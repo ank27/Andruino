@@ -1,6 +1,8 @@
-import datetime
+import datetime as dt
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
+
 # Create your models here.
 
 
@@ -155,3 +157,19 @@ class link(models.Model):
     link_text=models.CharField(max_length=1000)
 
 
+class BaseModel(models.Model):
+    created_at=models.DateTimeField(auto_now_add=True)
+    modified_at=models.DateTimeField(auto_now=True)
+
+
+class UserProfile(BaseModel):
+    email = models.TextField(max_length=200)
+    app_id = models.CharField(max_length=250, blank=True, null=True)
+    app_version = models.CharField(max_length=10, blank=True, null=True)
+    device_id = models.CharField(max_length=300, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.user.email +" "+self.app_id + " "+self.app_version
+
+    def save(self, *args, **kwargs):
+        super(UserProfile, self).save(*args, **kwargs)

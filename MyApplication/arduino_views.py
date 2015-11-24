@@ -1,6 +1,7 @@
 from django.http import request
 import time
 import simplejson
+from MyApplication.models import UserProfile
 
 __author__ = 'ankurkhandelwal'
 import django
@@ -179,3 +180,17 @@ def get_app_data(request):
     fw.close()
     # print(final_str)
     return HttpResponse("200",content_type='application/json')
+
+@csrf_exempt
+def register_app_id(request):
+    email=request.POST.get("email","")
+    app_id=request.POST.get("app_id","")
+    device_id=request.POST.get("device_id","")
+    app_version=request.POST.get("app_version","")
+    try:
+        if(email):
+            UserProfile(email=email,app_id=app_id,device_id=device_id,app_version=app_version).save()
+        else:
+            print("User not present")
+    except Exception as e:
+        print(e.message)
