@@ -3,3 +3,4 @@ python-dateutil==2.4.2
 simplejson==3.7.3
 pyserial==2.7
 Pillow==2.8.2
+python-gcm==0.2

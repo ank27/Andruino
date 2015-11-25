@@ -2,8 +2,7 @@ from django.http import request
 import time
 import simplejson
 from MyApplication.models import UserProfile
-
-__author__ = 'ankurkhandelwal'
+from gcm import GCM
 import django
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
@@ -11,6 +10,7 @@ from django.shortcuts import render
 import serial
 from django.http import HttpResponse
 from socket import *
+from MyApplication.constant import *
 
 port='/dev/tty.usbmodem1411/'
 baud_rate=9600
@@ -181,16 +181,33 @@ def get_app_data(request):
     # print(final_str)
     return HttpResponse("200",content_type='application/json')
 
-@csrf_exempt
+
+def send_notification(app_id):
+    api_key="AIzaSyBzAFQ19gB3BctG6VL8lO85VWf8I-vD_Gs"
+    gcm=GCM(api_key)
+    data = {'title':'Notify','extra': "Welcome to Arduino"}
+    print(data)
+    response = gcm.json_request(registration_ids=[app_id], data=data)
+    return response
+
+
+@django.views.decorators.csrf.csrf_exempt
 def register_app_id(request):
-    email=request.POST.get("email","")
-    app_id=request.POST.get("app_id","")
-    device_id=request.POST.get("device_id","")
-    app_version=request.POST.get("app_version","")
-    try:
-        if(email):
-            UserProfile(email=email,app_id=app_id,device_id=device_id,app_version=app_version).save()
-        else:
-            print("User not present")
-    except Exception as e:
-        print(e.message)
+    if request.POST:
+        email=str(request.POST.get("email",""))
+        app_id=str(request.POST.get("app_id",""))
+        device_id=str(request.POST.get("device_id",""))
+        app_version=str(request.POST.get("app_version",""))
+        print("register_app"," ",email," ",app_id ," ",device_id," ",app_version)
+        try:
+            if(email):
+                UserProfile(email=email,app_id=app_id,device_id=device_id,app_version=app_version).save()
+                send_notification(app_id)
+                print("app_id",app_id)
+            else:
+                print("User not present")
+        except Exception as e:
+            print(e.message)
+        return HttpResponse("200",content_type='application/json')
+    else:
+        return HttpResponse("401",content_type='application/json')

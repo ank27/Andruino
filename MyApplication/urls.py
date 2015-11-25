@@ -48,4 +48,5 @@ urlpatterns=[
      url(r'^app/app_data/$',arduino_views.app_data,name='get_topics'),
      url(r'^app/get_data/$',arduino_views.send_app_data,name='send_app_data'),
      url(r'^app/send_values/$',arduino_views.get_app_data,name='get_app_data'),
+     url(r'^app/register_app_id/$',arduino_views.register_app_id,name='register_app_id'),
 ]
