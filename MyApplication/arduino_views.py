@@ -1,5 +1,6 @@
 from django.http import request
 import time
+import requests
 import simplejson
 from MyApplication.models import UserProfile
 from gcm import GCM
@@ -9,15 +10,18 @@ from django.views.generic import View
 from django.shortcuts import render
 import serial
 from django.http import HttpResponse
-from socket import *
+import socket
 from MyApplication.constant import *
 
 port='/dev/tty.usbmodem1411/'
 baud_rate=9600
 
-server_address=('52.89.219.153', 80)
-client_socket = socket(AF_INET, SOCK_DGRAM)
-client_socket.settimeout(1)  #this will ensure that if arduino doesnt respond our program wont crash,
+# server_address=('52.89.219.153', 80)
+# address=('192.168.0.100',8888)
+# server_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+# server_socket.bind(address)
+# server_socket.settimeout(1)  #this will ensure that if arduino doesnt respond our program wont crash,
+# client_socket.listen(1)
 
 @django.views.decorators.csrf.csrf_exempt
 # ====read data from Arduino======
@@ -52,14 +56,14 @@ def send_binary_values(request):
 # ======================send data from web to arduino==================
 @django.views.decorators.csrf.csrf_exempt
 def send_data(request):
-    light1_state=request.GET.get("light1","")
-    light2_state=request.GET.get("light2","")
-    light3_state=request.GET.get("light3","")
-    light4_state=request.GET.get("light4","")
-    temp=request.GET.get("temp","")
-    light_intensity=request.GET.get("light_intensity","")
-    motion=request.GET.get("motion","")
-    # print(temp+","+light_intensity+","+motion)
+    light1_state=request.POST.get("light1","")
+    light2_state=request.POST.get("light2","")
+    light3_state=request.POST.get("light3","")
+    light4_state=request.POST.get("light4","")
+    temp=request.POST.get("temp","")
+    light_intensity=request.POST.get("light_intensity","")
+    motion=request.POST.get("motion","")
+    print("data_values",temp+","+light_intensity+","+motion)
     send_str=light1_state +","+light2_state+","+light3_state+","+light4_state
     f=open('MyApplication/workfile.txt','r+')
     final_str=temp+","+light_intensity+","+motion+","+send_str
@@ -71,43 +75,78 @@ def send_data(request):
         time.sleep(2)
         s.write(final_str.encode('utf-8'))
         time.sleep(1)
+
         return render(request,'minovate/index.html')
     except:
         print("Not connected!!")
+    return render(request,'minovate/index.html')
 
+
+# ============get arduino data=====================================
+@django.views.decorators.csrf.csrf_exempt
+def get_arduino_data(request):
+    light1_state=request.POST.get("light1","")
+    light2_state=request.POST.get("light2","")
+    light3_state=request.POST.get("light3","")
+    light4_state=request.POST.get("light4","")
+    print("light1",light1_state)
+    print("light2",light2_state)
+    print("light3",light3_state)
+    print("light4",light4_state)
+    temp=request.POST.get("temp","")
+    light_intensity=request.POST.get("light_intensity","")
+    motion=request.POST.get("motion","")
+    print("data_values",temp+","+light_intensity+","+motion)
+    send_str=light1_state +","+light2_state+","+light3_state+","+light4_state
+    f=open('MyApplication/workfile.txt','r+')
+    final_str=temp+","+light_intensity+","+motion+","+send_str
+    f.write(final_str)
+    f.close()
+    print(final_str)
+    context={
+        'temprature':temp,
+        'light_intensity':light_intensity,
+        'motion_value':motion,
+        'light1':light1_state,
+        'light2':light2_state,
+        'light3':light3_state,
+        'light4':light4_state,
+    }
+    print("context",context)
+    return render(request,'minovate/index.html',context)
 
 
 
 ################===================Ethernet Connection==========================
-@django.views.decorators.csrf.csrf_exempt
-def send_temp_data(request):
-    if request.POST:
-        temprature=request.POST.get("temprature_data")
-        ir=request.POST.get("IR_Sensor")
-        light=request.POST.get("photo_sensor")
-        client_socket.settimeout(1)
-        client_socket.sendto(temprature,server_address)
-        try:
-            recieved_data=client_socket.recvfrom(2048)
-            # print("temprature ",recieved_data)
-        except:
-            pass
-        time.sleep(1)
-
-        client_socket.sendto(ir,server_address)
-        try:
-            recieved_data=client_socket.recvfrom(2048)
-            # print("ir_sensor ",recieved_data)
-        except:
-            pass
-        time.sleep(1)
-
-        client_socket.sendto(light,server_address)
-        try:
-            recieved_data=client_socket.recvfrom(2048)
-            # print("light_sensor ", recieved_data)
-        except:
-            pass
+# @django.views.decorators.csrf.csrf_exempt
+# def send_temp_data(request):
+#     if request.POST:
+#         temprature=request.POST.get("temprature_data")
+#         ir=request.POST.get("IR_Sensor")
+#         light=request.POST.get("photo_sensor")
+#         client_socket.settimeout(1)
+#         client_socket.sendto(temprature,address)
+#         try:
+#             recieved_data=client_socket.recvfrom(2048)
+#             # print("temprature ",recieved_data)
+#         except:
+#             pass
+#         time.sleep(1)
+#
+#         client_socket.sendto(ir,address)
+#         try:
+#             recieved_data=client_socket.recvfrom(2048)
+#             # print("ir_sensor ",recieved_data)
+#         except:
+#             pass
+#         time.sleep(1)
+#
+#         client_socket.sendto(light,address)
+#         try:
+#             recieved_data=client_socket.recvfrom(2048)
+#             # print("light_sensor ", recieved_data)
+#         except:
+#             pass
 #==================================================================================
 
 #  //////////////////////////////  app data /////////////////
@@ -165,6 +204,7 @@ def get_app_data(request):
     data=f.read()
     aray=data.split(',')
     f.close()
+    print("light_state",state)
     if(light=='1'):
         aray[3]=state
     elif(light=='2'):
@@ -175,11 +215,23 @@ def get_app_data(request):
         aray[6]=state
 
     final_str=aray[0]+","+aray[1]+","+aray[2]+","+aray[3]+","+aray[4]+","+aray[5]+","+aray[6]
+    data_str=aray[3]+","+aray[4]+","+aray[5]+","+aray[6]
     fw=open('MyApplication/workfile.txt','w')
     fw.write(final_str)
     fw.close()
-    # print(final_str)
-    return HttpResponse("200",content_type='application/json')
+    print("str",final_str)
+    try:
+        url="http://192.168.0.101:8000/?data="+data_str
+        print("url ",url)
+        content = requests.get(url)
+        print('content',content.text)
+        if '200' in content.text:
+            return HttpResponse('200',content_type='application/json')
+        else:
+            return HttpResponse('500',content_type='application/json')
+    except Exception as e:
+        print(e)
+        return HttpResponse('503',content_type='application/json')
 
 
 def send_notification(app_id):

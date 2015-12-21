@@ -43,6 +43,7 @@ urlpatterns=[
      #####################Arduino#########################################
      url(r'^send_binary_data/',arduino_views.send_binary_values,name='led_switch'),
      url(r'^send_data/$',arduino_views.send_data, name="send_data"),
+     url(r'^get_arduino_data/$',arduino_views.get_arduino_data, name="get_arduino_data"),
 
      #App
      url(r'^app/app_data/$',arduino_views.app_data,name='get_topics'),

@@ -6,3 +6,4 @@ manage.pyc
 *.py[cod]
 *.pyc
 MyApplication/tests.pyc
+MyApplication/migrations/*
